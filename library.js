@@ -358,7 +358,7 @@ socketPlugins.openai.summarizeTopic = async function (socket, data) {
 		await topics.setTopicField(tid, 'openai:summary', openaiSummary);
 	}
 	return {
-		summary: openaiSummary,
+		summary: summary.stripReasoning(openaiSummary),
 		renderMarkdown: settings.summaryRenderMarkdown === 'on',
 	};
 };
