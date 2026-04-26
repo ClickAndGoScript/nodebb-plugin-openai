@@ -192,6 +192,8 @@ async function checkReputation(uid, settings, silent) {
 	const hasEnoughRep = parseInt(settings.minimumReputation, 10) === 0 ||
 		parseInt(reputation, 10) >= parseInt(settings.minimumReputation, 10);
 
+	console.log('[openai] checkReputation: uid=', uid, 'reputation=', reputation, 'minimumReputation=', settings.minimumReputation, '=> hasEnoughRep=', hasEnoughRep);
+
 	if (!hasEnoughRep && !silent) {
 		sockets.server.in(`uid_${uid}`).emit('event:alert', {
 			type: 'danger',
@@ -207,16 +209,20 @@ async function checkGroupMembership(uid, settings, silent) {
 	try {
 		allowedGroups = JSON.parse(settings.allowedGroups) || [];
 	} catch (err) {
-		console.error(err);
+		console.error('[openai] Failed to parse allowedGroups:', settings.allowedGroups, err);
 		allowedGroups = [];
 	}
 
+	console.log('[openai] checkGroupMembership: uid=', uid, 'allowedGroups=', allowedGroups);
+
 	if (!allowedGroups.length) {
+		console.log('[openai] checkGroupMembership: no allowedGroups configured => allowed for everyone');
 		return true;
 	}
 
 	const isMembers = await groups.isMemberOfGroups(uid, allowedGroups);
 	const memberOfAny = isMembers.includes(true);
+	console.log('[openai] checkGroupMembership: isMembers=', isMembers, '=> memberOfAny=', memberOfAny);
 	if (!memberOfAny && !silent) {
 		sockets.server.in(`uid_${uid}`).emit('event:alert', {
 			type: 'danger',
@@ -275,9 +281,22 @@ plugin.addAdminNavigation = (header) => {
 };
 
 plugin.filterTopicThreadTools = async (hookData) => {
-	if (!await canUseOpenAI(hookData.uid, await getSettings(), true)) {
+	console.log('[openai] filterTopicThreadTools called. uid=', hookData.uid, 'tid=', hookData.topic && hookData.topic.tid);
+	const settings = await getSettings();
+	console.log('[openai] settings:', {
+		hasApiKey: !!settings.apikey,
+		model: settings.model,
+		minimumReputation: settings.minimumReputation,
+		allowedGroups: settings.allowedGroups,
+		chatgptUsername: settings['chatgpt-username'],
+	});
+	const allowed = await canUseOpenAI(hookData.uid, settings, true);
+	console.log('[openai] canUseOpenAI result for uid', hookData.uid, '=>', allowed);
+	if (!allowed) {
+		console.log('[openai] Summarize button NOT added — user failed canUseOpenAI check.');
 		return hookData;
 	}
+	console.log('[openai] Adding summarize-topic tool to thread tools.');
 	hookData.tools.push({
 		class: 'openai-summarize-topic',
 		icon: 'fa-wand-magic-sparkles',
