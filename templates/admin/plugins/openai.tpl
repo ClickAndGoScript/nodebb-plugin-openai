@@ -49,7 +49,19 @@
 							<option value="gpt-4">gpt-4</option>
 							<option value="gpt-4.1-mini">gpt-4.1-mini</option>
 							<option value="gpt-4.1">gpt-4.1</option>
+							<option value="gemini-2.5-pro">gemini-2.5-pro</option>
+							<option value="gemini-2.5-flash">gemini-2.5-flash</option>
+							<option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+							<option value="gemini-3-flash">gemini-3-flash</option>
+							<option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
 							<option value="gemini-2.0-flash">gemini-2.0-flash</option>
+							<option value="gemma-3-27b-it">gemma-3-27b-it</option>
+							<option value="gemma-3-12b-it">gemma-3-12b-it</option>
+							<option value="gemma-3-4b-it">gemma-3-4b-it</option>
+							<option value="gemma-4-31b-it">gemma-4-31b-it</option>
+							<option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it</option>
+							<option value="gemma-4-e4b-it">gemma-4-e4b-it</option>
+							<option value="gemma-4-e2b-it">gemma-4-e2b-it</option>
 						</select>
 					</div>
 					<div class="">
