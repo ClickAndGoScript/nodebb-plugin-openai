@@ -64,9 +64,37 @@
 							<option value="gemma-4-e2b-it">gemma-4-e2b-it</option>
 						</select>
 					</div>
-					<div class="">
+					<div class="mb-3">
 						<label class="form-label" for="systemPrompt">System Prompt</label>
 						<textarea class="form-control" id="systemPrompt" name="systemPrompt" title="System prompt" placeholder="You are a helpful assistant" rows="8"></textarea>
+					</div>
+				</div>
+
+				<div class="mb-4">
+					<h5 class="fw-bold tracking-tight settings-header">Topic Summary</h5>
+
+					<div class="mb-3">
+						<label class="form-label" for="summarySystemPrompt">Summary System Prompt</label>
+						<textarea class="form-control" id="summarySystemPrompt" name="summarySystemPrompt" title="Summary system prompt" placeholder="You summarize discussion forum threads into concise summaries." rows="6"></textarea>
+						<p class="form-text">
+							System prompt used when summarizing each chunk of a topic. Leave blank to use the default. You can write this in any language (e.g. Hebrew) to control the summary's language and style.
+						</p>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label" for="summaryFinalSystemPrompt">Final Summary System Prompt</label>
+						<textarea class="form-control" id="summaryFinalSystemPrompt" name="summaryFinalSystemPrompt" title="Final summary system prompt" placeholder="You are an assistant that summarizes forum thread summaries into a single cohesive summary." rows="6"></textarea>
+						<p class="form-text">
+							System prompt used to merge multiple chunk-summaries into a single final summary (only triggered for long topics). Leave blank to use the default.
+						</p>
+					</div>
+
+					<div class="form-check form-switch">
+						<input type="checkbox" class="form-check-input" id="summaryRenderMarkdown" name="summaryRenderMarkdown">
+						<label for="summaryRenderMarkdown" class="form-check-label">Render summary as Markdown</label>
+						<p class="form-text">
+							If enabled, the summary dialog will render Markdown (bold, lists, headings, etc.). If disabled, the summary is shown as plain text.
+						</p>
 					</div>
 				</div>
 

@@ -29,6 +29,9 @@ const defaults = {
 	minimumReputation: 0,
 	allowedGroups: '[]',
 	systemPrompt: 'You are a helpful assistant',
+	summarySystemPrompt: '',
+	summaryFinalSystemPrompt: '',
+	summaryRenderMarkdown: 'off',
 };
 
 
@@ -350,10 +353,12 @@ socketPlugins.openai.summarizeTopic = async function (socket, data) {
 	}
 
 	let openaiSummary = await topics.getTopicField(tid, 'openai:summary');
-	if (openaiSummary) {
-		return openaiSummary;
+	if (!openaiSummary) {
+		openaiSummary = await summary.summarizeTopic(tid, openai, settings);
+		await topics.setTopicField(tid, 'openai:summary', openaiSummary);
 	}
-	openaiSummary = await summary.summarizeTopic(tid, openai, settings);
-	await topics.setTopicField(tid, 'openai:summary', openaiSummary);
-	return openaiSummary;
+	return {
+		summary: openaiSummary,
+		renderMarkdown: settings.summaryRenderMarkdown === 'on',
+	};
 };
