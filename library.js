@@ -96,15 +96,17 @@ plugin.actionMentionsNotify = async function (hookData) {
 			return;
 		}
 
-		console.log('[openai] notification.tid:', notification.tid, '| bodyLong starts with @username:', notification.bodyLong && notification.bodyLong.startsWith(`@${chatgptusername}`));
-		if (notification.tid && notification.bodyLong.startsWith(`@${chatgptusername}`)) {
+		const bodyText = stripHtml(notification.bodyLong);
+		console.log('[openai] bodyText (stripped):', bodyText.slice(0, 150));
+		console.log('[openai] notification.tid:', notification.tid, '| bodyText starts with @username (case-insensitive):', bodyText.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`));
+		if (notification.tid && bodyText.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`)) {
 			const canReply = await privileges.topics.can('topics:reply', notification.tid, chatgptUid);
 			console.log('[openai] canReply:', canReply);
 			if (!canReply) {
 				return;
 			}
 
-			const message = notification.bodyLong.replace(new RegExp(`^@${chatgptusername}`), '');
+			const message = bodyText.replace(new RegExp(`^@${chatgptusername}`, 'i'), '').trim();
 			console.log('[openai] message after stripping username (length:', message.length, '):', message.slice(0, 100));
 			if (message.length) {
 				const context = await buildMentionContext(notification);
@@ -139,7 +141,7 @@ plugin.actionMentionsNotify = async function (hookData) {
 				}
 			}
 		} else {
-			console.log('[openai] condition not met: tid present =', !!notification.tid, '| bodyLong =', notification.bodyLong && notification.bodyLong.slice(0, 80));
+			console.log('[openai] condition not met: tid present =', !!notification.tid, '| bodyText =', bodyText.slice(0, 80));
 		}
 	} catch (err) {
 		console.error('[openai] actionMentionsNotify error:', err.stack);
@@ -280,6 +282,10 @@ async function checkGroupMembership(uid, settings, silent) {
 		});
 	}
 	return memberOfAny;
+}
+
+function stripHtml(html) {
+	return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 async function buildMentionContext(notification) {
