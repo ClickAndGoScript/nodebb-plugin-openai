@@ -96,17 +96,17 @@ plugin.actionMentionsNotify = async function (hookData) {
 			return;
 		}
 
-		const bodyText = stripHtml(notification.bodyLong);
-		console.log('[openai] bodyText (stripped):', bodyText.slice(0, 150));
-		console.log('[openai] notification.tid:', notification.tid, '| bodyText starts with @username (case-insensitive):', bodyText.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`));
-		if (notification.tid && bodyText.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`)) {
+		const rawContent = await posts.getPostField(notification.pid, 'content');
+		console.log('[openai] rawContent (markdown):', rawContent && rawContent.slice(0, 150));
+		console.log('[openai] notification.tid:', notification.tid, '| rawContent starts with @username (case-insensitive):', rawContent && rawContent.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`));
+		if (notification.tid && rawContent && rawContent.toLowerCase().startsWith(`@${chatgptusername.toLowerCase()}`)) {
 			const canReply = await privileges.topics.can('topics:reply', notification.tid, chatgptUid);
 			console.log('[openai] canReply:', canReply);
 			if (!canReply) {
 				return;
 			}
 
-			const message = bodyText.replace(new RegExp(`^@${chatgptusername}`, 'i'), '').trim();
+			const message = rawContent.replace(new RegExp(`^@${chatgptusername}`, 'i'), '').trim();
 			console.log('[openai] message after stripping username (length:', message.length, '):', message.slice(0, 100));
 			if (message.length) {
 				const context = await buildMentionContext(notification);
@@ -141,7 +141,7 @@ plugin.actionMentionsNotify = async function (hookData) {
 				}
 			}
 		} else {
-			console.log('[openai] condition not met: tid present =', !!notification.tid, '| bodyText =', bodyText.slice(0, 80));
+			console.log('[openai] condition not met: tid present =', !!notification.tid, '| rawContent =', rawContent && rawContent.slice(0, 80));
 		}
 	} catch (err) {
 		console.error('[openai] actionMentionsNotify error:', err.stack);
