@@ -3,7 +3,6 @@
 const { OpenAI } = require('openai');
 
 let openai;
-let openaiMention;
 
 const db = require.main.require('./src/database');
 const meta = require.main.require('./src/meta');
@@ -54,13 +53,6 @@ plugin.init = async (params) => {
 		plugin.openai = openai;
 	}
 
-	if (settings && (settings.mentionApiKey || settings.mentionApiBaseUrl)) {
-		openaiMention = new OpenAI({
-			apiKey: settings.mentionApiKey || settings.apikey,
-			baseURL: settings.mentionApiBaseUrl || 'https://api.openai.com/v1',
-		});
-	}
-
 	routeHelpers.setupAdminPageRoute(router, '/admin/plugins/openai', controllers.renderAdminPage);
 };
 
@@ -80,7 +72,7 @@ plugin.actionMentionsNotify = async function (hookData) {
 		}
 
 		const settings = await getSettings();
-		console.log('[openai] chatgpt-username:', settings['chatgpt-username'], '| openai client:', !!openai, '| openaiMention client:', !!openaiMention);
+		console.log('[openai] chatgpt-username:', settings['chatgpt-username'], '| openai client:', !!openai, '| mentionApiBaseUrl:', settings.mentionApiBaseUrl || '(none)');
 
 		const allowed = await canUseMention(notification.from, settings);
 		console.log('[openai] canUseMention for uid', notification.from, ':', allowed);
@@ -120,7 +112,12 @@ plugin.actionMentionsNotify = async function (hookData) {
 				});
 				console.log('[openai] sending payload to API (length:', payload.length, ')');
 
-				const response = await chatComplete(payload, openaiMention || openai);
+				let response;
+				if (settings.mentionApiBaseUrl) {
+					response = await postMentionToCustomApi(payload, settings);
+				} else {
+					response = await chatComplete(payload, openai);
+				}
 				console.log('[openai] API response received (length:', response ? response.length : 0, '):', response ? response.slice(0, 100) : null);
 
 				if (response) {
@@ -205,7 +202,7 @@ plugin.actionMessagingSave = async function (hookData) {
 			);
 		}
 
-		const response = await chatComplete(conversation, openaiMention || openai);
+		const response = await chatComplete(conversation, openai);
 
 		if (response) {
 			await api.chats.post({ uid: chatgptUid, session: {} }, {
@@ -282,6 +279,34 @@ async function checkGroupMembership(uid, settings, silent) {
 		});
 	}
 	return memberOfAny;
+}
+
+async function postMentionToCustomApi(payload, settings) {
+	const url = settings.mentionApiBaseUrl;
+	const apiKey = settings.mentionApiKey || settings.apikey;
+	console.log('[openai] POSTing to custom mention API:', url);
+
+	const res = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
+		},
+		body: payload,
+	});
+
+	console.log('[openai] custom API response status:', res.status);
+	if (!res.ok) {
+		const errText = await res.text();
+		throw new Error(`${res.status} ${errText}`);
+	}
+
+	const contentType = res.headers.get('content-type') || '';
+	if (contentType.includes('application/json')) {
+		const data = await res.json();
+		return data.content || data.response || data.message || data.reply || data.text || JSON.stringify(data);
+	}
+	return await res.text();
 }
 
 function stripHtml(html) {
