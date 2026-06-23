@@ -72,35 +72,54 @@ async function getSettings() {
 plugin.actionMentionsNotify = async function (hookData) {
 	try {
 		const { notification } = hookData;
+		console.log('[openai] actionMentionsNotify fired, notification:', JSON.stringify(notification));
+
 		if (!notification) {
+			console.log('[openai] no notification object, returning');
 			return;
 		}
 
 		const settings = await getSettings();
-		if (!await canUseMention(notification.from, settings)) {
+		console.log('[openai] chatgpt-username:', settings['chatgpt-username'], '| openai client:', !!openai, '| openaiMention client:', !!openaiMention);
+
+		const allowed = await canUseMention(notification.from, settings);
+		console.log('[openai] canUseMention for uid', notification.from, ':', allowed);
+		if (!allowed) {
 			return;
 		}
 
 		const chatgptusername = settings['chatgpt-username'];
 		const chatgptUid = await user.getUidByUsername(chatgptusername);
+		console.log('[openai] chatgptUid:', chatgptUid);
 		if (!chatgptUid) {
+			console.log('[openai] chatgpt user not found, returning');
 			return;
 		}
+
+		console.log('[openai] notification.tid:', notification.tid, '| bodyLong starts with @username:', notification.bodyLong && notification.bodyLong.startsWith(`@${chatgptusername}`));
 		if (notification.tid && notification.bodyLong.startsWith(`@${chatgptusername}`)) {
 			const canReply = await privileges.topics.can('topics:reply', notification.tid, chatgptUid);
+			console.log('[openai] canReply:', canReply);
 			if (!canReply) {
 				return;
 			}
+
 			const message = notification.bodyLong.replace(new RegExp(`^@${chatgptusername}`), '');
+			console.log('[openai] message after stripping username (length:', message.length, '):', message.slice(0, 100));
 			if (message.length) {
 				const context = await buildMentionContext(notification);
+				console.log('[openai] context built:', context);
+
 				const fullMessage = `[Context]\n${context}\n\n[Message]\n${message}`;
 				const payload = JSON.stringify({
 					tid: notification.tid,
 					pid: notification.pid,
 					content: fullMessage,
 				});
+				console.log('[openai] sending payload to API (length:', payload.length, ')');
+
 				const response = await chatComplete(payload, openaiMention || openai);
+				console.log('[openai] API response received (length:', response ? response.length : 0, '):', response ? response.slice(0, 100) : null);
 
 				if (response) {
 					const postData = await topics.reply({
@@ -116,11 +135,14 @@ plugin.actionMentionsNotify = async function (hookData) {
 						'reputation:disabled': meta.config['reputation:disabled'] === 1,
 						'downvote:disabled': meta.config['downvote:disabled'] === 1,
 					});
+					console.log('[openai] reply posted successfully, pid:', postData && postData.pid);
 				}
 			}
+		} else {
+			console.log('[openai] condition not met: tid present =', !!notification.tid, '| bodyLong =', notification.bodyLong && notification.bodyLong.slice(0, 80));
 		}
 	} catch (err) {
-		console.error(err.stack);
+		console.error('[openai] actionMentionsNotify error:', err.stack);
 	}
 };
 
