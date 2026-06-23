@@ -112,29 +112,29 @@ plugin.actionMentionsNotify = async function (hookData) {
 				});
 				console.log('[openai] sending payload to API (length:', payload.length, ')');
 
-				let response;
 				if (settings.mentionApiBaseUrl) {
-					response = await postMentionToCustomApi(payload, settings);
+					await postMentionToCustomApi(payload, settings);
+					console.log('[openai] payload sent to custom API, reply will be handled externally');
 				} else {
-					response = await chatComplete(payload, openai);
-				}
-				console.log('[openai] API response received (length:', response ? response.length : 0, '):', response ? response.slice(0, 100) : null);
+					const response = await chatComplete(payload, openai);
+					console.log('[openai] API response received (length:', response ? response.length : 0, '):', response ? response.slice(0, 100) : null);
 
-				if (response) {
-					const postData = await topics.reply({
-						uid: chatgptUid,
-						content: response,
-						tid: notification.tid,
-						toPid: notification.pid,
-					});
+					if (response) {
+						const postData = await topics.reply({
+							uid: chatgptUid,
+							content: response,
+							tid: notification.tid,
+							toPid: notification.pid,
+						});
 
-					await user.updateOnlineUsers(chatgptUid);
-					await socketHelpers.notifyNew(chatgptUid, 'newPost', {
-						posts: [postData],
-						'reputation:disabled': meta.config['reputation:disabled'] === 1,
-						'downvote:disabled': meta.config['downvote:disabled'] === 1,
-					});
-					console.log('[openai] reply posted successfully, pid:', postData && postData.pid);
+						await user.updateOnlineUsers(chatgptUid);
+						await socketHelpers.notifyNew(chatgptUid, 'newPost', {
+							posts: [postData],
+							'reputation:disabled': meta.config['reputation:disabled'] === 1,
+							'downvote:disabled': meta.config['downvote:disabled'] === 1,
+						});
+						console.log('[openai] reply posted successfully, pid:', postData && postData.pid);
+					}
 				}
 			}
 		} else {
