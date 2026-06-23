@@ -3,6 +3,7 @@
 const { OpenAI } = require('openai');
 
 let openai;
+let openaiMention;
 
 const db = require.main.require('./src/database');
 const meta = require.main.require('./src/meta');
@@ -10,6 +11,8 @@ const controllers = require('./lib/controllers');
 const routeHelpers = require.main.require('./src/routes/helpers');
 const socketHelpers = require.main.require('./src/socket.io/helpers');
 const topics = require.main.require('./src/topics');
+const posts = require.main.require('./src/posts');
+const categories = require.main.require('./src/categories');
 const user = require.main.require('./src/user');
 const messaging = require.main.require('./src/messaging');
 const api = require.main.require('./src/api');
@@ -32,6 +35,10 @@ const defaults = {
 	summarySystemPrompt: '',
 	summaryFinalSystemPrompt: '',
 	summaryRenderMarkdown: 'off',
+	mentionApiKey: '',
+	mentionApiBaseUrl: '',
+	mentionMinimumReputation: '',
+	mentionAllowedGroups: '',
 };
 
 
@@ -45,6 +52,13 @@ plugin.init = async (params) => {
 		});
 
 		plugin.openai = openai;
+	}
+
+	if (settings && (settings.mentionApiKey || settings.mentionApiBaseUrl)) {
+		openaiMention = new OpenAI({
+			apiKey: settings.mentionApiKey || settings.apikey,
+			baseURL: settings.mentionApiBaseUrl || 'https://api.openai.com/v1',
+		});
 	}
 
 	routeHelpers.setupAdminPageRoute(router, '/admin/plugins/openai', controllers.renderAdminPage);
@@ -63,7 +77,7 @@ plugin.actionMentionsNotify = async function (hookData) {
 		}
 
 		const settings = await getSettings();
-		if (!await canUseOpenAI(notification.from, settings)) {
+		if (!await canUseMention(notification.from, settings)) {
 			return;
 		}
 
@@ -79,7 +93,14 @@ plugin.actionMentionsNotify = async function (hookData) {
 			}
 			const message = notification.bodyLong.replace(new RegExp(`^@${chatgptusername}`), '');
 			if (message.length) {
-				const response = await chatComplete(message);
+				const context = await buildMentionContext(notification);
+				const fullMessage = `[Context]\n${context}\n\n[Message]\n${message}`;
+				const payload = JSON.stringify({
+					tid: notification.tid,
+					pid: notification.pid,
+					content: fullMessage,
+				});
+				const response = await chatComplete(payload, openaiMention || openai);
 
 				if (response) {
 					const postData = await topics.reply({
@@ -110,7 +131,7 @@ plugin.actionMessagingSave = async function (hookData) {
 			return;
 		}
 		const settings = await getSettings();
-		if (!await canUseOpenAI(message.fromuid, settings)) {
+		if (!await canUseMention(message.fromuid, settings)) {
 			return;
 		}
 
@@ -160,7 +181,7 @@ plugin.actionMessagingSave = async function (hookData) {
 			);
 		}
 
-		const response = await chatComplete(conversation);
+		const response = await chatComplete(conversation, openaiMention || openai);
 
 		if (response) {
 			await api.chats.post({ uid: chatgptUid, session: {} }, {
@@ -174,6 +195,16 @@ plugin.actionMessagingSave = async function (hookData) {
 	}
 };
 
+function getMentionEffectiveSettings(settings) {
+	const mentionMinRep = settings.mentionMinimumReputation !== '' && settings.mentionMinimumReputation != null
+		? settings.mentionMinimumReputation
+		: settings.minimumReputation;
+	const mentionGroups = settings.mentionAllowedGroups && settings.mentionAllowedGroups !== '[]' && settings.mentionAllowedGroups !== ''
+		? settings.mentionAllowedGroups
+		: settings.allowedGroups;
+	return { ...settings, minimumReputation: mentionMinRep, allowedGroups: mentionGroups };
+}
+
 async function canUseOpenAI(uid, settings, silent = false) {
 	if (!await checkReputation(uid, settings, silent)) {
 		return false;
@@ -182,6 +213,10 @@ async function canUseOpenAI(uid, settings, silent = false) {
 		return false;
 	}
 	return true;
+}
+
+async function canUseMention(uid, settings, silent = false) {
+	return canUseOpenAI(uid, getMentionEffectiveSettings(settings), silent);
 }
 
 async function checkReputation(uid, settings, silent) {
@@ -225,6 +260,58 @@ async function checkGroupMembership(uid, settings, silent) {
 	return memberOfAny;
 }
 
+async function buildMentionContext(notification) {
+	const { tid, pid, from } = notification;
+
+	const [topicData, askerUsername] = await Promise.all([
+		topics.getTopicFields(tid, ['title', 'cid', 'postcount', 'tags', 'locked']),
+		user.getUserField(from, 'username'),
+	]);
+
+	const lines = [];
+	lines.push(`Topic: "${topicData.title}"`);
+
+	if (topicData.cid) {
+		try {
+			const categoryData = await categories.getCategoryFields(topicData.cid, ['name']);
+			if (categoryData && categoryData.name) {
+				lines.push(`Category: ${categoryData.name}`);
+			}
+		} catch (e) { /* skip if unavailable */ }
+	}
+
+	try {
+		let tags = topicData.tags;
+		if (typeof tags === 'string') {
+			tags = JSON.parse(tags);
+		}
+		if (Array.isArray(tags) && tags.length) {
+			const tagValues = tags.map(t => (t && typeof t === 'object' ? t.value : t)).filter(Boolean);
+			if (tagValues.length) {
+				lines.push(`Tags: ${tagValues.join(', ')}`);
+			}
+		}
+	} catch (e) { /* skip if unavailable */ }
+
+	lines.push(`Posts in topic so far: ${topicData.postcount}`);
+
+	if (parseInt(topicData.locked, 10) === 1) {
+		lines.push(`Topic status: locked`);
+	}
+
+	lines.push(`Asked by: @${askerUsername}`);
+
+	try {
+		const postData = await posts.getPostFields(pid, ['toPid']);
+		if (postData.toPid) {
+			const toPidIndex = await posts.getPidIndex(postData.toPid, tid, 'oldest_to_newest');
+			lines.push(`Replying to: post #${toPidIndex} in this topic (pid: ${postData.toPid})`);
+		}
+	} catch (e) { /* skip if unavailable */ }
+
+	return lines.join('\n');
+}
+
 async function getMessageIds(roomId, uid, start, stop) {
 	const isPublic = await db.getObjectField(`chat:room:${roomId}`, 'public');
 	if (parseInt(isPublic, 10) === 1) {
@@ -238,8 +325,9 @@ async function getMessageIds(roomId, uid, start, stop) {
 	);
 }
 
-async function chatComplete(messages) {
-	if (!openai) {
+async function chatComplete(messages, client) {
+	const openaiClient = client || openai;
+	if (!openaiClient) {
 		throw new Error('API not created!');
 	}
 	const isConversation = Array.isArray(messages);
@@ -254,7 +342,7 @@ async function chatComplete(messages) {
 		conversation.push({ role: 'user', content: messages });
 	}
 
-	const chatCompletion = await openai.chat.completions.create({
+	const chatCompletion = await openaiClient.chat.completions.create({
 		model: model || 'gpt-3.5-turbo',
 		messages: conversation,
 	});

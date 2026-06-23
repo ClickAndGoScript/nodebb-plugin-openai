@@ -71,6 +71,29 @@
 				</div>
 
 				<div class="mb-4">
+					<h5 class="fw-bold tracking-tight settings-header">Mention (Tag) Settings</h5>
+					<p class="form-text mb-3">
+						Override API settings specifically for @mention responses. If left blank, the general API key and base URL above are used. Requires a restart.
+					</p>
+
+					<div class="mb-3">
+						<label class="form-label" for="mentionApiKey">Mention API Key</label>
+						<input type="text" id="mentionApiKey" name="mentionApiKey" title="Mention API Key" class="form-control">
+						<p class="form-text">
+							API key to use for @mention responses. Leave blank to use the general API key above.
+						</p>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label" for="mentionApiBaseUrl">Mention API Base URL</label>
+						<input type="text" id="mentionApiBaseUrl" name="mentionApiBaseUrl" title="Mention API Base URL" class="form-control">
+						<p class="form-text">
+							API base URL to use for @mention responses. Leave blank to use the general API base URL above.
+						</p>
+					</div>
+				</div>
+
+				<div class="mb-4">
 					<h5 class="fw-bold tracking-tight settings-header">Topic Summary</h5>
 
 					<div class="mb-3">
@@ -98,14 +121,17 @@
 					</div>
 				</div>
 
-				<div class="">
+				<div class="mb-4">
 					<h5 class="fw-bold tracking-tight settings-header">Restrictions</h5>
+					<p class="form-text mb-3">
+						General restrictions that apply to all features (mentions and topic summaries) unless overridden below.
+					</p>
 
 					<div class="mb-3">
 						<label class="form-label" for="minimumReputation">Minimum Reputation</label>
 						<input type="text" id="minimumReputation" name="minimumReputation" title="Minimum Reputation" class="form-control">
 						<p class="form-text">
-							Minimum reputation required to mention chatgpt user. (0 to disable)
+							Minimum reputation required to use any OpenAI feature. (0 to disable)
 						</p>
 					</div>
 					<div class="mb-3">
@@ -116,7 +142,33 @@
 							{{{ end }}}
 						</select>
 						<p class="form-text">
-							Only users in these groups will be able to mention the chatgpt user. Leave blank to allow all groups.
+							Only users in these groups will be able to use any OpenAI feature. Leave blank to allow all groups.
+						</p>
+					</div>
+				</div>
+
+				<div class="">
+					<h5 class="fw-bold tracking-tight settings-header">Mention-specific Restrictions</h5>
+					<p class="form-text mb-3">
+						Override restrictions specifically for @mention responses. If left blank, the general restrictions above apply.
+					</p>
+
+					<div class="mb-3">
+						<label class="form-label" for="mentionMinimumReputation">Mention Minimum Reputation</label>
+						<input type="text" id="mentionMinimumReputation" name="mentionMinimumReputation" title="Mention Minimum Reputation" class="form-control">
+						<p class="form-text">
+							Minimum reputation required to @mention the ChatGPT user. Leave blank to use the general minimum reputation above.
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" form="mentionAllowedGroups">Mention Allowed Groups</label>
+						<select class="form-select" multiple id="mentionAllowedGroups" name="mentionAllowedGroups" size="10">
+							{{{ each groups }}}
+							<option value="{./displayName}">{./displayName}</option>
+							{{{ end }}}
+						</select>
+						<p class="form-text">
+							Only users in these groups will be able to @mention the ChatGPT user. Leave blank to use the general allowed groups above.
 						</p>
 					</div>
 				</div>
