@@ -176,8 +176,23 @@
 				<div class="">
 					<h5 class="fw-bold tracking-tight settings-header">Private Chat Restrictions</h5>
 					<p class="form-text mb-3">
-						Restrictions for users chatting privately with the ChatGPT user. If left blank, the general restrictions above apply.
+						Restrictions and API settings for users chatting privately with the ChatGPT user. If left blank, the general settings above apply.
 					</p>
+
+					<div class="mb-3">
+						<label class="form-label" for="pmApiKey">Chat API Key</label>
+						<input type="text" id="pmApiKey" name="pmApiKey" title="Chat API Key" class="form-control">
+						<p class="form-text">
+							API key to use for private chat responses. Leave blank to use the general API key. Requires a restart.
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="pmApiBaseUrl">Chat API Base URL</label>
+						<input type="text" id="pmApiBaseUrl" name="pmApiBaseUrl" title="Chat API Base URL" class="form-control">
+						<p class="form-text">
+							API base URL to use for private chat responses. Leave blank to use the general API base URL. Requires a restart.
+						</p>
+					</div>
 
 					<div class="mb-3">
 						<label class="form-label" for="pmMinimumReputation">Chat Minimum Reputation</label>
