@@ -172,6 +172,39 @@
 						</p>
 					</div>
 				</div>
+
+				<div class="">
+					<h5 class="fw-bold tracking-tight settings-header">Private Chat Restrictions</h5>
+					<p class="form-text mb-3">
+						Restrictions for users chatting privately with the ChatGPT user. If left blank, the general restrictions above apply.
+					</p>
+
+					<div class="mb-3">
+						<label class="form-label" for="pmMinimumReputation">Chat Minimum Reputation</label>
+						<input type="text" id="pmMinimumReputation" name="pmMinimumReputation" title="Chat Minimum Reputation" class="form-control">
+						<p class="form-text">
+							Minimum reputation required to chat privately with the ChatGPT user. Leave blank to use the general minimum reputation above.
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" form="pmAllowedGroups">Chat Allowed Groups</label>
+						<select class="form-select" multiple id="pmAllowedGroups" name="pmAllowedGroups" size="10">
+							{{{ each groups }}}
+							<option value="{./displayName}">{./displayName}</option>
+							{{{ end }}}
+						</select>
+						<p class="form-text">
+							Only users in these groups will be able to chat privately with the ChatGPT user. Leave blank to use the general allowed groups above.
+						</p>
+					</div>
+					<div class="mb-3">
+						<label class="form-label" for="pmNoPermissionMessage">No Permission Message</label>
+						<input type="text" id="pmNoPermissionMessage" name="pmNoPermissionMessage" title="No Permission Message" class="form-control" placeholder="Sorry, you do not have permission to chat with me.">
+						<p class="form-text">
+							Message the bot sends when an unauthorized user tries to chat with it.
+						</p>
+					</div>
+				</div>
 			</form>
 		</div>
 

@@ -38,6 +38,9 @@ const defaults = {
 	mentionApiBaseUrl: '',
 	mentionMinimumReputation: '',
 	mentionAllowedGroups: '',
+	pmMinimumReputation: '',
+	pmAllowedGroups: '',
+	pmNoPermissionMessage: 'Sorry, you do not have permission to chat with me.',
 };
 
 
@@ -152,9 +155,6 @@ plugin.actionMessagingSave = async function (hookData) {
 			return;
 		}
 		const settings = await getSettings();
-		if (!await canUseMention(message.fromuid, settings)) {
-			return;
-		}
 
 		const chatgptusername = settings['chatgpt-username'];
 		const chatgptUid = await user.getUidByUsername(chatgptusername);
@@ -182,6 +182,17 @@ plugin.actionMessagingSave = async function (hookData) {
 		if (!shouldReply) {
 			return;
 		}
+
+		if (!await canUsePm(fromuid, settings)) {
+			const noPermMsg = settings.pmNoPermissionMessage || 'Sorry, you do not have permission to chat with me.';
+			await api.chats.post({ uid: chatgptUid, session: {} }, {
+				roomId,
+				message: noPermMsg,
+				toMid: message.mid,
+			});
+			return;
+		}
+
 		let conversation = [{ role: 'user', content: message.content }];
 		if (isPrivate) {
 			const mids = await getMessageIds(roomId, chatgptUid, 0, 20);
@@ -238,6 +249,20 @@ async function canUseOpenAI(uid, settings, silent = false) {
 
 async function canUseMention(uid, settings, silent = false) {
 	return canUseOpenAI(uid, getMentionEffectiveSettings(settings), silent);
+}
+
+function getPmEffectiveSettings(settings) {
+	const pmMinRep = settings.pmMinimumReputation !== '' && settings.pmMinimumReputation != null
+		? settings.pmMinimumReputation
+		: settings.minimumReputation;
+	const pmGroups = settings.pmAllowedGroups && settings.pmAllowedGroups !== '[]' && settings.pmAllowedGroups !== ''
+		? settings.pmAllowedGroups
+		: settings.allowedGroups;
+	return { ...settings, minimumReputation: pmMinRep, allowedGroups: pmGroups };
+}
+
+async function canUsePm(uid, settings) {
+	return canUseOpenAI(uid, getPmEffectiveSettings(settings), true);
 }
 
 async function checkReputation(uid, settings, silent) {
