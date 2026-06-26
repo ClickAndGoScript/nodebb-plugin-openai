@@ -18,6 +18,7 @@ const messaging = require.main.require('./src/messaging');
 const api = require.main.require('./src/api');
 const privileges = require.main.require('./src/privileges');
 const groups = require.main.require('./src/groups');
+const translator = require.main.require('./src/translator');
 const sockets = require.main.require('./src/socket.io');
 const socketPlugins = require.main.require('./src/socket.io/plugins');
 const summary = require('./lib/summary');
@@ -43,7 +44,7 @@ const defaults = {
 	pmApiBaseUrl: '',
 	pmMinimumReputation: '',
 	pmAllowedGroups: '',
-	pmNoPermissionMessage: 'Sorry, you do not have permission to chat with me.',
+	pmNoPermissionMessage: '',
 };
 
 
@@ -194,7 +195,7 @@ plugin.actionMessagingSave = async function (hookData) {
 		}
 
 		if (!await canUsePm(fromuid, settings)) {
-			const noPermMsg = settings.pmNoPermissionMessage || 'Sorry, you do not have permission to chat with me.';
+			const noPermMsg = settings.pmNoPermissionMessage || await translator.translate('[[openai:no-permission-to-chat]]');
 			await api.chats.post({ uid: chatgptUid, session: {} }, {
 				roomId,
 				message: noPermMsg,

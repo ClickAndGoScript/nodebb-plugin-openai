@@ -5,42 +5,42 @@
 		<div id="spy-container" class="col-12 col-md-8 px-0 mb-4" tabindex="0">
 			<form role="form" class="openai-settings">
 				<div class="mb-4">
-					<h5 class="fw-bold tracking-tight settings-header">General</h5>
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.general]]</h5>
 
 					<div class="mb-3">
-						<label class="form-label" for="apikey">API Key</label>
+						<label class="form-label" for="apikey">[[openai:admin.api-key]]</label>
 						<input type="text" id="apikey" name="apikey" title="API Key" class="form-control">
 						<p class="form-text">
-							Get your <a href="https://platform.openai.com/api-keys">API Key</a> and enter it above. You can enter a Google Gemini API key if you want to use Google Gemini. Don't forget to change the model used to a gemini variant. Requires a restart.
+							[[openai:admin.api-key-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="apiBaseUrl">API Base Url</label>
+						<label class="form-label" for="apiBaseUrl">[[openai:admin.api-base-url]]</label>
 						<input type="text" id="apiBaseUrl" name="apiBaseUrl" title="API Base Url" class="form-control">
 						<p class="form-text">
-							If you want to use Google's Gemini API, enter the base URL here (https://generativelanguage.googleapis.com/v1beta/openai/). Otherwise, leave it blank to use OpenAI's API. Requires a restart.
+							[[openai:admin.api-base-url-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="chatgpt-username">ChatGPT Username</label>
+						<label class="form-label" for="chatgpt-username">[[openai:admin.chatgpt-username]]</label>
 						<input type="text" id="chatgpt-username" name="chatgpt-username" title="ChatGPT Username" class="form-control">
 						<p class="form-text">
-							<a href="{config.relative_path}/admin/manage/users">Create a user</a> and enter their username. Other users can mention this user to ask questions to ChatGPT or send private messages if enabled below.
+							<a href="{config.relative_path}/admin/manage/users">[[openai:admin.create-user]]</a> [[openai:admin.chatgpt-username-help]]
 						</p>
 					</div>
 
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="enablePrivateMessages" name="enablePrivateMessages">
-						<label for="enablePrivateMessages" class="form-check-label">Enable Private Messages</label>
+						<label for="enablePrivateMessages" class="form-check-label">[[openai:admin.enable-private-messages]]</label>
 						<p class="form-text">
-							If enabled users can send ChatGPT user private messages.
+							[[openai:admin.enable-private-messages-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="model">Model</label>
+						<label class="form-label" for="model">[[openai:admin.model]]</label>
 						<select class="form-select" id="model" name="model" title="Model">
 							<option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
 							<option value="gpt-4o-mini">gpt-4o-mini</option>
@@ -65,158 +65,158 @@
 						</select>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="systemPrompt">System Prompt</label>
-						<textarea class="form-control" id="systemPrompt" name="systemPrompt" title="System prompt" placeholder="You are a helpful assistant" rows="8"></textarea>
+						<label class="form-label" for="systemPrompt">[[openai:admin.system-prompt]]</label>
+						<textarea class="form-control" id="systemPrompt" name="systemPrompt" title="System prompt" placeholder="[[openai:admin.system-prompt-placeholder]]" rows="8"></textarea>
 					</div>
 				</div>
 
 				<div class="mb-4">
-					<h5 class="fw-bold tracking-tight settings-header">Mention (Tag) Settings</h5>
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.mention-settings]]</h5>
 					<p class="form-text mb-3">
-						Override API settings specifically for @mention responses. If left blank, the general API key and base URL above are used. Requires a restart.
+						[[openai:admin.mention-settings-help]]
 					</p>
 
 					<div class="mb-3">
-						<label class="form-label" for="mentionApiKey">Mention API Key</label>
+						<label class="form-label" for="mentionApiKey">[[openai:admin.mention-api-key]]</label>
 						<input type="text" id="mentionApiKey" name="mentionApiKey" title="Mention API Key" class="form-control">
 						<p class="form-text">
-							API key to use for @mention responses. Leave blank to use the general API key above.
+							[[openai:admin.mention-api-key-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="mentionApiBaseUrl">Mention API Base URL</label>
+						<label class="form-label" for="mentionApiBaseUrl">[[openai:admin.mention-api-base-url]]</label>
 						<input type="text" id="mentionApiBaseUrl" name="mentionApiBaseUrl" title="Mention API Base URL" class="form-control">
 						<p class="form-text">
-							API base URL to use for @mention responses. Leave blank to use the general API base URL above.
+							[[openai:admin.mention-api-base-url-help]]
 						</p>
 					</div>
 				</div>
 
 				<div class="mb-4">
-					<h5 class="fw-bold tracking-tight settings-header">Topic Summary</h5>
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.topic-summary]]</h5>
 
 					<div class="mb-3">
-						<label class="form-label" for="summarySystemPrompt">Summary System Prompt</label>
-						<textarea class="form-control" id="summarySystemPrompt" name="summarySystemPrompt" title="Summary system prompt" placeholder="You summarize discussion forum threads into concise summaries." rows="6"></textarea>
+						<label class="form-label" for="summarySystemPrompt">[[openai:admin.summary-system-prompt]]</label>
+						<textarea class="form-control" id="summarySystemPrompt" name="summarySystemPrompt" title="Summary system prompt" placeholder="[[openai:admin.summary-system-prompt-placeholder]]" rows="6"></textarea>
 						<p class="form-text">
-							System prompt used when summarizing each chunk of a topic. Leave blank to use the default. You can write this in any language (e.g. Hebrew) to control the summary's language and style.
+							[[openai:admin.summary-system-prompt-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="summaryFinalSystemPrompt">Final Summary System Prompt</label>
-						<textarea class="form-control" id="summaryFinalSystemPrompt" name="summaryFinalSystemPrompt" title="Final summary system prompt" placeholder="You are an assistant that summarizes forum thread summaries into a single cohesive summary." rows="6"></textarea>
+						<label class="form-label" for="summaryFinalSystemPrompt">[[openai:admin.summary-final-system-prompt]]</label>
+						<textarea class="form-control" id="summaryFinalSystemPrompt" name="summaryFinalSystemPrompt" title="Final summary system prompt" placeholder="[[openai:admin.summary-final-system-prompt-placeholder]]" rows="6"></textarea>
 						<p class="form-text">
-							System prompt used to merge multiple chunk-summaries into a single final summary (only triggered for long topics). Leave blank to use the default.
+							[[openai:admin.summary-final-system-prompt-help]]
 						</p>
 					</div>
 
 					<div class="form-check form-switch">
 						<input type="checkbox" class="form-check-input" id="summaryRenderMarkdown" name="summaryRenderMarkdown">
-						<label for="summaryRenderMarkdown" class="form-check-label">Render summary as Markdown</label>
+						<label for="summaryRenderMarkdown" class="form-check-label">[[openai:admin.summary-render-markdown]]</label>
 						<p class="form-text">
-							If enabled, the summary dialog will render Markdown (bold, lists, headings, etc.). If disabled, the summary is shown as plain text.
+							[[openai:admin.summary-render-markdown-help]]
 						</p>
 					</div>
 				</div>
 
 				<div class="mb-4">
-					<h5 class="fw-bold tracking-tight settings-header">Restrictions</h5>
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.restrictions]]</h5>
 					<p class="form-text mb-3">
-						General restrictions that apply to all features (mentions and topic summaries) unless overridden below.
+						[[openai:admin.restrictions-help]]
 					</p>
 
 					<div class="mb-3">
-						<label class="form-label" for="minimumReputation">Minimum Reputation</label>
+						<label class="form-label" for="minimumReputation">[[openai:admin.minimum-reputation]]</label>
 						<input type="text" id="minimumReputation" name="minimumReputation" title="Minimum Reputation" class="form-control">
 						<p class="form-text">
-							Minimum reputation required to use any OpenAI feature. (0 to disable)
+							[[openai:admin.minimum-reputation-help]]
 						</p>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" form="allowedGroups">Allowed Groups</label>
+						<label class="form-label" form="allowedGroups">[[openai:admin.allowed-groups]]</label>
 						<select class="form-select" multiple id="allowedGroups" name="allowedGroups" size="10">
 							{{{ each groups }}}
 							<option value="{./displayName}">{./displayName}</option>
 							{{{ end }}}
 						</select>
 						<p class="form-text">
-							Only users in these groups will be able to use any OpenAI feature. Leave blank to allow all groups.
+							[[openai:admin.allowed-groups-help]]
 						</p>
 					</div>
 				</div>
 
-				<div class="">
-					<h5 class="fw-bold tracking-tight settings-header">Mention-specific Restrictions</h5>
+				<div class="mb-4">
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.mention-restrictions]]</h5>
 					<p class="form-text mb-3">
-						Override restrictions specifically for @mention responses. If left blank, the general restrictions above apply.
+						[[openai:admin.mention-restrictions-help]]
 					</p>
 
 					<div class="mb-3">
-						<label class="form-label" for="mentionMinimumReputation">Mention Minimum Reputation</label>
+						<label class="form-label" for="mentionMinimumReputation">[[openai:admin.mention-minimum-reputation]]</label>
 						<input type="text" id="mentionMinimumReputation" name="mentionMinimumReputation" title="Mention Minimum Reputation" class="form-control">
 						<p class="form-text">
-							Minimum reputation required to @mention the ChatGPT user. Leave blank to use the general minimum reputation above.
+							[[openai:admin.mention-minimum-reputation-help]]
 						</p>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" form="mentionAllowedGroups">Mention Allowed Groups</label>
+						<label class="form-label" form="mentionAllowedGroups">[[openai:admin.mention-allowed-groups]]</label>
 						<select class="form-select" multiple id="mentionAllowedGroups" name="mentionAllowedGroups" size="10">
 							{{{ each groups }}}
 							<option value="{./displayName}">{./displayName}</option>
 							{{{ end }}}
 						</select>
 						<p class="form-text">
-							Only users in these groups will be able to @mention the ChatGPT user. Leave blank to use the general allowed groups above.
+							[[openai:admin.mention-allowed-groups-help]]
 						</p>
 					</div>
 				</div>
 
 				<div class="">
-					<h5 class="fw-bold tracking-tight settings-header">Private Chat Restrictions</h5>
+					<h5 class="fw-bold tracking-tight settings-header">[[openai:admin.pm-restrictions]]</h5>
 					<p class="form-text mb-3">
-						Restrictions and API settings for users chatting privately with the ChatGPT user. If left blank, the general settings above apply.
+						[[openai:admin.pm-restrictions-help]]
 					</p>
 
 					<div class="mb-3">
-						<label class="form-label" for="pmApiKey">Chat API Key</label>
+						<label class="form-label" for="pmApiKey">[[openai:admin.pm-api-key]]</label>
 						<input type="text" id="pmApiKey" name="pmApiKey" title="Chat API Key" class="form-control">
 						<p class="form-text">
-							API key to use for private chat responses. Leave blank to use the general API key. Requires a restart.
+							[[openai:admin.pm-api-key-help]]
 						</p>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="pmApiBaseUrl">Chat API Base URL</label>
+						<label class="form-label" for="pmApiBaseUrl">[[openai:admin.pm-api-base-url]]</label>
 						<input type="text" id="pmApiBaseUrl" name="pmApiBaseUrl" title="Chat API Base URL" class="form-control">
 						<p class="form-text">
-							API base URL to use for private chat responses. Leave blank to use the general API base URL. Requires a restart.
+							[[openai:admin.pm-api-base-url-help]]
 						</p>
 					</div>
 
 					<div class="mb-3">
-						<label class="form-label" for="pmMinimumReputation">Chat Minimum Reputation</label>
+						<label class="form-label" for="pmMinimumReputation">[[openai:admin.pm-minimum-reputation]]</label>
 						<input type="text" id="pmMinimumReputation" name="pmMinimumReputation" title="Chat Minimum Reputation" class="form-control">
 						<p class="form-text">
-							Minimum reputation required to chat privately with the ChatGPT user. Leave blank to use the general minimum reputation above.
+							[[openai:admin.pm-minimum-reputation-help]]
 						</p>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" form="pmAllowedGroups">Chat Allowed Groups</label>
+						<label class="form-label" form="pmAllowedGroups">[[openai:admin.pm-allowed-groups]]</label>
 						<select class="form-select" multiple id="pmAllowedGroups" name="pmAllowedGroups" size="10">
 							{{{ each groups }}}
 							<option value="{./displayName}">{./displayName}</option>
 							{{{ end }}}
 						</select>
 						<p class="form-text">
-							Only users in these groups will be able to chat privately with the ChatGPT user. Leave blank to use the general allowed groups above.
+							[[openai:admin.pm-allowed-groups-help]]
 						</p>
 					</div>
 					<div class="mb-3">
-						<label class="form-label" for="pmNoPermissionMessage">No Permission Message</label>
-						<input type="text" id="pmNoPermissionMessage" name="pmNoPermissionMessage" title="No Permission Message" class="form-control" placeholder="Sorry, you do not have permission to chat with me.">
+						<label class="form-label" for="pmNoPermissionMessage">[[openai:admin.pm-no-permission-message]]</label>
+						<input type="text" id="pmNoPermissionMessage" name="pmNoPermissionMessage" title="No Permission Message" class="form-control" placeholder="[[openai:no-permission-to-chat]]">
 						<p class="form-text">
-							Message the bot sends when an unauthorized user tries to chat with it.
+							[[openai:admin.pm-no-permission-message-help]]
 						</p>
 					</div>
 				</div>
