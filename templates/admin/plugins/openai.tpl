@@ -41,28 +41,32 @@
 
 					<div class="mb-3">
 						<label class="form-label" for="model">Model</label>
-						<select class="form-select" id="model" name="model" title="Model">
-							<option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-							<option value="gpt-4o-mini">gpt-4o-mini</option>
-							<option value="gpt-4o">gpt-4o</option>
-							<option value="gpt-4-turbo">gpt-4-turbo</option>
-							<option value="gpt-4">gpt-4</option>
-							<option value="gpt-4.1-mini">gpt-4.1-mini</option>
-							<option value="gpt-4.1">gpt-4.1</option>
-							<option value="gemini-2.5-pro">gemini-2.5-pro</option>
-							<option value="gemini-2.5-flash">gemini-2.5-flash</option>
-							<option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
-							<option value="gemini-3-flash">gemini-3-flash</option>
-							<option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
-							<option value="gemini-2.0-flash">gemini-2.0-flash</option>
-							<option value="gemma-3-27b-it">gemma-3-27b-it</option>
-							<option value="gemma-3-12b-it">gemma-3-12b-it</option>
-							<option value="gemma-3-4b-it">gemma-3-4b-it</option>
-							<option value="gemma-4-31b-it">gemma-4-31b-it</option>
-							<option value="gemma-4-26b-a4b-it">gemma-4-26b-a4b-it</option>
-							<option value="gemma-4-e4b-it">gemma-4-e4b-it</option>
-							<option value="gemma-4-e2b-it">gemma-4-e2b-it</option>
-						</select>
+						<input type="text" class="form-control" id="model" name="model" title="Model" list="model-suggestions" placeholder="e.g. gpt-4o, gemini-2.5-pro">
+						<datalist id="model-suggestions">
+							<option value="gpt-3.5-turbo">
+							<option value="gpt-4o-mini">
+							<option value="gpt-4o">
+							<option value="gpt-4-turbo">
+							<option value="gpt-4">
+							<option value="gpt-4.1-mini">
+							<option value="gpt-4.1">
+							<option value="gemini-2.5-pro">
+							<option value="gemini-2.5-flash">
+							<option value="gemini-2.5-flash-lite">
+							<option value="gemini-3-flash">
+							<option value="gemini-3.1-flash-lite">
+							<option value="gemini-2.0-flash">
+							<option value="gemma-3-27b-it">
+							<option value="gemma-3-12b-it">
+							<option value="gemma-3-4b-it">
+							<option value="gemma-4-31b-it">
+							<option value="gemma-4-26b-a4b-it">
+							<option value="gemma-4-e4b-it">
+							<option value="gemma-4-e2b-it">
+						</datalist>
+						<p class="form-text">
+							הכנס את שם המודל הרצוי. ניתן לבחור מהרשימה המוצעת או להקליד כל שם מודל אחר (גם אם עדיין לא מופיע ברשימה), מבלי שיהיה צורך לעדכן את התוסף.
+						</p>
 					</div>
 					<div class="mb-3">
 						<label class="form-label" for="systemPrompt">System Prompt</label>

@@ -1,6 +1,6 @@
 {
-	"id": "nodebb-plugin-openai",
-	"url": "https://github.com/NodeBB/nodebb-plugin-openai",
+	"id": "nodebb-plugin-otzaria-bot",
+	"url": "https://github.com/ClickAndGoScript/nodebb-plugin-openai",
 	"library": "./library.js",
 	"hooks": [
 		{ "hook": "static:app.load", "method": "init" },
