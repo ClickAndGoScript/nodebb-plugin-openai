@@ -90,8 +90,8 @@ $('document').ready(function () {
 
 	function summarizeTopic() {
 		const tid = ajaxify.data.tid;
-		require(['bootbox'], function (bootbox) {
-			const modal = bootbox.dialog({
+		require(['modals'], async function (modals) {
+			const modal = await modals.dialog({
 				title: '[[openai:topic-summary]]',
 				message: `<div class="openai-summarize-topic"><div class="loading text-center"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div></div>`,
 				size: 'large',
