@@ -3,6 +3,7 @@
 	"no-permission-to-chat": "Sorry, you do not have permission to chat with me.",
 	"summarize-topic": "Summarize Topic",
 	"topic-summary": "Topic Summary",
+	"summary-cooldown-error": "You must wait before summarizing a topic again.",
 
 	"admin.general": "General",
 	"admin.api-key": "API Key",

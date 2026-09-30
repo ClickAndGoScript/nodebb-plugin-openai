@@ -22,6 +22,11 @@ const translator = require.main.require('./src/translator');
 const sockets = require.main.require('./src/socket.io');
 const socketPlugins = require.main.require('./src/socket.io/plugins');
 const summary = require('./lib/summary');
+const cacheCreate = require.main.require('./src/cache/lru');
+const summaryCache = cacheCreate({
+	name: 'openai-summary',
+	max: 200,
+});
 
 const plugin = module.exports;
 
@@ -515,7 +520,11 @@ socketPlugins.openai.summarizeTopic = async function (socket, data) {
 
 	let openaiSummary = await topics.getTopicField(tid, 'openai:summary');
 	if (!openaiSummary) {
+		if (summaryCache.get(`uid:${socket.uid}`)) {
+			throw new Error('[[openai:summary-cooldown-error]]');
+		}
 		openaiSummary = await summary.summarizeTopic(tid, openai, settings);
+		summaryCache.set(`uid:${socket.uid}`, 1, 60000);
 		await topics.setTopicField(tid, 'openai:summary', openaiSummary);
 	}
 	return {

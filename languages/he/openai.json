@@ -3,6 +3,7 @@
 	"no-permission-to-chat": "מצטער, אין לך הרשאה לשוחח איתי.",
 	"summarize-topic": "סכם נושא",
 	"topic-summary": "סיכום הנושא",
+	"summary-cooldown-error": "עליך להמתין לפני שתסכם את הנושא שוב.",
 
 	"admin.general": "כללי",
 	"admin.api-key": "מפתח API",
