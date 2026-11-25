@@ -5,24 +5,24 @@ const { OpenAI } = require('openai');
 let openai;
 let openaiPm;
 
-const db = require.main.require('./src/database');
-const meta = require.main.require('./src/meta');
+const db = nodebb.require('./src/database');
+const meta = nodebb.require('./src/meta');
 const controllers = require('./lib/controllers');
-const routeHelpers = require.main.require('./src/routes/helpers');
-const socketHelpers = require.main.require('./src/socket.io/helpers');
-const topics = require.main.require('./src/topics');
-const posts = require.main.require('./src/posts');
-const categories = require.main.require('./src/categories');
-const user = require.main.require('./src/user');
-const messaging = require.main.require('./src/messaging');
-const api = require.main.require('./src/api');
-const privileges = require.main.require('./src/privileges');
-const groups = require.main.require('./src/groups');
-const translator = require.main.require('./src/translator');
-const sockets = require.main.require('./src/socket.io');
-const socketPlugins = require.main.require('./src/socket.io/plugins');
+const routeHelpers = nodebb.require('./src/routes/helpers');
+const socketHelpers = nodebb.require('./src/socket.io/helpers');
+const topics = nodebb.require('./src/topics');
+const posts = nodebb.require('./src/posts');
+const categories = nodebb.require('./src/categories');
+const user = nodebb.require('./src/user');
+const messaging = nodebb.require('./src/messaging');
+const api = nodebb.require('./src/api');
+const privileges = nodebb.require('./src/privileges');
+const groups = nodebb.require('./src/groups');
+const translator = nodebb.require('./src/translator');
+const sockets = nodebb.require('./src/socket.io');
+const socketPlugins = nodebb.require('./src/socket.io/plugins');
 const summary = require('./lib/summary');
-const cacheCreate = require.main.require('./src/cache/lru');
+const cacheCreate = nodebb.require('./src/cache/lru');
 const summaryCache = cacheCreate({
 	name: 'openai-summary',
 	max: 200,

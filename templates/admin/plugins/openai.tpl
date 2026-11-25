@@ -43,26 +43,9 @@
 						<label class="form-label" for="model">{{tx("openai:admin.model")}}</label>
 						<input type="text" class="form-control" id="model" name="model" title="Model" list="model-suggestions" placeholder="e.g. gpt-4o, gemini-2.5-pro">
 						<datalist id="model-suggestions">
-							<option value="gpt-3.5-turbo">
-							<option value="gpt-4o-mini">
-							<option value="gpt-4o">
-							<option value="gpt-4-turbo">
-							<option value="gpt-4">
-							<option value="gpt-4.1-mini">
-							<option value="gpt-4.1">
-							<option value="gemini-2.5-pro">
-							<option value="gemini-2.5-flash">
-							<option value="gemini-2.5-flash-lite">
-							<option value="gemini-3-flash">
-							<option value="gemini-3.1-flash-lite">
-							<option value="gemini-2.0-flash">
-							<option value="gemma-3-27b-it">
-							<option value="gemma-3-12b-it">
-							<option value="gemma-3-4b-it">
-							<option value="gemma-4-31b-it">
-							<option value="gemma-4-26b-a4b-it">
-							<option value="gemma-4-e4b-it">
-							<option value="gemma-4-e2b-it">
+							{{{ each models }}}
+							<option value="{./id}">
+							{{{ end }}}
 						</datalist>
 						<p class="form-text">
 							{{tx("openai:admin.model-help")}}
