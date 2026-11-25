@@ -26,6 +26,8 @@
 	"admin.mention-api-key-help": "מפתח API לשימוש בתגובות @אזכור. השאר ריק לשימוש במפתח ה-API הכללי למעלה.",
 	"admin.mention-api-base-url": "כתובת בסיס API לאזכור",
 	"admin.mention-api-base-url-help": "כתובת בסיס API לשימוש בתגובות @אזכור. השאר ריק לשימוש בכתובת הבסיס הכללית למעלה.",
+	"admin.mention-empty-message": "הודעה לתיוג ללא טקסט",
+	"admin.mention-empty-message-help": "הטקסט שנשלח ל-API כשהבוט מתויג בלי טקסט. השאר ריק כדי להתעלם מתיוגים ריקים.",
 
 	"admin.topic-summary": "סיכום נושא",
 	"admin.summary-system-prompt": "הנחיית מערכת לסיכום",

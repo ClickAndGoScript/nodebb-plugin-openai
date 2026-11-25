@@ -26,6 +26,8 @@
 	"admin.mention-api-key-help": "API key to use for @mention responses. Leave blank to use the general API key above.",
 	"admin.mention-api-base-url": "Mention API Base URL",
 	"admin.mention-api-base-url-help": "API base URL to use for @mention responses. Leave blank to use the general API base URL above.",
+	"admin.mention-empty-message": "Empty Mention Message",
+	"admin.mention-empty-message-help": "Text sent to the API when the bot is mentioned with no text. Leave blank to ignore empty mentions.",
 
 	"admin.topic-summary": "Topic Summary",
 	"admin.summary-system-prompt": "Summary System Prompt",

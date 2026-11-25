@@ -43,6 +43,7 @@ const defaults = {
 	summaryRenderMarkdown: 'off',
 	mentionApiKey: '',
 	mentionApiBaseUrl: '',
+	mentionEmptyMessage: '(התיוג הגיע בלי טקסט. שלוף את השרשור וענה לפי ההקשר שלו, רק אם יש שאלה או בעיה הנוגעת לאוצריא.)',
 	mentionMinimumReputation: '',
 	mentionAllowedGroups: '',
 	pmApiKey: '',
@@ -117,7 +118,10 @@ plugin.actionMentionsNotify = async function (hookData) {
 				return;
 			}
 
-			const message = rawContent.replace(new RegExp(`^@${chatgptusername}`, 'i'), '').trim();
+			let message = rawContent.replace(new RegExp(`^@${chatgptusername}`, 'i'), '').trim();
+			if (!message.length) {
+				message = (settings.mentionEmptyMessage || '').trim();
+			}
 			// console.log('[openai] message after stripping username (length:', message.length, '):', message.slice(0, 100));
 			if (message.length) {
 				const context = await buildMentionContext(notification);

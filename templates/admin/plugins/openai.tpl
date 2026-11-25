@@ -78,6 +78,14 @@
 							{{tx("openai:admin.mention-api-base-url-help")}}
 						</p>
 					</div>
+
+					<div class="mb-3">
+						<label class="form-label" for="mentionEmptyMessage">{{tx("openai:admin.mention-empty-message")}}</label>
+						<textarea class="form-control" id="mentionEmptyMessage" name="mentionEmptyMessage" title="Mention empty message" rows="3"></textarea>
+						<p class="form-text">
+							{{tx("openai:admin.mention-empty-message-help")}}
+						</p>
+					</div>
 				</div>
 
 				<div class="mb-4">
